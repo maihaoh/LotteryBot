@@ -1,47 +1,50 @@
 {
-  "updated_at": "2026-09-21 11:19:23",
-  "total_draws": 10,
+  "status": "ONLINE",
+  "updated_at": "2026-09-21 12:11:05",
+  "total_draws": 20,
   "latest": {
-    "issue": "20260921100051358",
-    "number": 9,
-    "colour": "green",
-    "size": "大"
+    "issue": "20260921100051462",
+    "number": 1,
+    "size": "小",
+    "colours": [
+      "green"
+    ]
   },
   "prediction": {
-    "issue": "20260921100051359",
-    "top1": 2,
-    "top2": 4,
-    "top3": 8,
-    "top1_score": 20.0,
+    "issue": "20260921100051463",
+    "top1": 1,
+    "top2": 2,
+    "top3": 9,
+    "top1_score": 18.25,
     "size": "小",
-    "colour": "red"
+    "colours": [
+      "green"
+    ]
   },
-  "hot_numbers": [
-    {
-      "number": 2,
-      "count": 2
+  "previous_result": null,
+  "statistics": {
+    "number": {
+      "win": 0,
+      "loss": 0,
+      "total": 0,
+      "rate": 0
     },
-    {
-      "number": 4,
-      "count": 2
+    "colour": {
+      "win": 0,
+      "loss": 0,
+      "total": 0,
+      "rate": 0
     },
-    {
-      "number": 8,
-      "count": 2
+    "size": {
+      "win": 0,
+      "loss": 0,
+      "total": 0,
+      "rate": 0
     }
-  ],
-  "cold_numbers": [
-    {
-      "number": 1,
-      "count": 0
-    },
-    {
-      "number": 5,
-      "count": 0
-    },
-    {
-      "number": 6,
-      "count": 0
-    }
-  ]
+  },
+  "rules": {
+    "size": "0-4 小 / 5-9 大",
+    "colour": "0 红+紫 / 5 绿+紫 / 13579 绿 / 2468 红"
+  },
+  "disclaimer": "统计模型根据历史数据进行分析，开奖结果具有随机性，不能保证预测准确。"
 }
