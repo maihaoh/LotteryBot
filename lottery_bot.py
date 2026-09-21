@@ -2,7 +2,6 @@ import time
 import random
 import hashlib
 import json
-from datetime import datetime
 
 import requests
 
@@ -13,6 +12,8 @@ from predictor import main as run_prediction
 API_URL = "https://mzplayapi.com/api/webapi/GetNoaverageEmerdList"
 
 REQUEST_TIMEOUT = 15
+
+COLLECT_INTERVAL = 30
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0",
@@ -94,29 +95,41 @@ def collect_data():
         time.time()
     )
 
-    response = requests.post(
-        API_URL,
-        headers=HEADERS,
-        json=payload,
-        timeout=REQUEST_TIMEOUT
-    )
+    try:
 
-    print(
-        "API Status:",
-        response.status_code
-    )
+        response = requests.post(
+            API_URL,
+            headers=HEADERS,
+            json=payload,
+            timeout=REQUEST_TIMEOUT
+        )
 
-    response.raise_for_status()
+        print(
+            "API Status:",
+            response.status_code
+        )
 
-    data = response.json()
+        response.raise_for_status()
+
+        data = response.json()
+
+    except Exception as error:
+
+        print()
+        print("❌ API 请求失败:")
+        print(error)
+
+        return 0
+
 
     if data.get("code") != 0:
 
-        print("API 请求失败")
-
+        print()
+        print("❌ API 返回错误:")
         print(data)
 
         return 0
+
 
     draw_list = data["data"]["list"]
 
@@ -148,33 +161,13 @@ def collect_data():
             new_count += 1
 
             print(
-                "新增:",
+                "🆕 新开奖:",
                 issue,
-                "| 数字:",
-                number,
-                "| 颜色:",
-                colour,
-                "| 大小:",
-                size
+                "| 数字:", number,
+                "| 颜色:", colour,
+                "| 大小:", size
             )
 
-    return new_count
-
-
-def main():
-
-    create_database()
-
-    print()
-    print("=" * 60)
-    print("LOTTERY GITHUB BOT")
-    print("=" * 60)
-
-    print(
-        "开始抓取最新开奖..."
-    )
-
-    new_count = collect_data()
 
     print()
     print(
@@ -187,17 +180,94 @@ def main():
         get_total_draws()
     )
 
+    return new_count
+
+
+def main():
+
+    create_database()
+
     print()
+    print("=" * 60)
+    print("LOTTERY REAL-TIME BOT")
+    print("=" * 60)
+
     print(
-        "开始进行预测..."
+        "⏱️ 自动抓取间隔:",
+        COLLECT_INTERVAL,
+        "秒"
     )
 
-    run_prediction()
-
     print()
-    print("=" * 60)
-    print("本次任务完成")
-    print("=" * 60)
+
+    while True:
+
+        try:
+
+            print()
+            print("=" * 60)
+
+            print(
+                "开始检查最新开奖..."
+            )
+
+            new_count = collect_data()
+
+
+            if new_count > 0:
+
+                print()
+                print(
+                    "🎯 发现新开奖，开始重新预测..."
+                )
+
+                run_prediction()
+
+            else:
+
+                print()
+                print(
+                    "⏳ 暂无新开奖，等待下一次检查..."
+                )
+
+
+            print()
+            print(
+                f"⏱️ {COLLECT_INTERVAL} 秒后再次检查..."
+            )
+
+            time.sleep(
+                COLLECT_INTERVAL
+            )
+
+
+        except KeyboardInterrupt:
+
+            print()
+            print(
+                "🛑 Bot 已停止"
+            )
+
+            break
+
+
+        except Exception as error:
+
+            print()
+            print(
+                "❌ Bot 发生错误:"
+            )
+
+            print(error)
+
+            print()
+            print(
+                "30 秒后重新尝试..."
+            )
+
+            time.sleep(
+                COLLECT_INTERVAL
+            )
 
 
 if __name__ == "__main__":
