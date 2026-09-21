@@ -3,6 +3,9 @@ name: Lottery Bot
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   lottery:
     runs-on: ubuntu-latest
@@ -16,10 +19,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
+      - name: Install requests
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          python -m pip install requests
+
+      - name: Check requests
+        run: |
+          python -c "import requests; print('requests OK:', requests.__version__)"
 
       - name: Run Lottery Bot
         run: python lottery_bot.py
