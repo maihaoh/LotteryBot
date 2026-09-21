@@ -73,16 +73,13 @@ def generate_signature(data):
         None
     )
 
-
     sorted_data = {}
-
 
     for key in sorted(
         t.keys()
     ):
 
         value = t[key]
-
 
         if key in [
             "signature",
@@ -92,7 +89,6 @@ def generate_signature(data):
 
             continue
 
-
         if (
             value is None
             or value == ""
@@ -100,9 +96,7 @@ def generate_signature(data):
 
             continue
 
-
         sorted_data[key] = value
-
 
     json_string = json.dumps(
         sorted_data,
@@ -112,7 +106,6 @@ def generate_signature(data):
         ),
         ensure_ascii=False
     )
-
 
     return hashlib.md5(
         json_string.encode(
@@ -203,11 +196,9 @@ def collect_data():
             0
     }
 
-
     payload["random"] = (
         generate_random()
     )
-
 
     payload["signature"] = (
         generate_signature(
@@ -215,11 +206,9 @@ def collect_data():
         )
     )
 
-
     payload["timestamp"] = int(
         time.time()
     )
-
 
     response = requests.post(
 
@@ -232,18 +221,14 @@ def collect_data():
         timeout=REQUEST_TIMEOUT
     )
 
-
     print(
         "API Status:",
         response.status_code
     )
 
-
     response.raise_for_status()
 
-
     data = response.json()
-
 
     if data.get("code") != 0:
 
@@ -255,14 +240,11 @@ def collect_data():
 
         return 0
 
-
     draw_list = (
         data["data"]["list"]
     )
 
-
     new_count = 0
-
 
     for item in draw_list:
 
@@ -274,27 +256,21 @@ def collect_data():
             item["number"]
         )
 
-
-        # 使用我们自己的颜色规则
         colours = get_colours(
             number
         )
-
 
         colour_string = ",".join(
             colours
         )
 
-
         size = get_size(
             number
         )
 
-
         before = (
             get_total_draws()
         )
-
 
         save_draw(
 
@@ -307,16 +283,13 @@ def collect_data():
             size
         )
 
-
         after = (
             get_total_draws()
         )
 
-
         if after > before:
 
             new_count += 1
-
 
             print(
 
@@ -334,12 +307,11 @@ def collect_data():
                 size
             )
 
-
     return new_count
 
 
 # =========================================================
-# 结算上一轮预测
+# 结算预测
 # =========================================================
 
 def settle_predictions():
@@ -348,17 +320,13 @@ def settle_predictions():
         get_unchecked_predictions()
     )
 
-
     if not predictions:
 
         return
 
-
-    # 从 database 读取所有开奖
     from database import get_all_draws
 
     draws = get_all_draws()
-
 
     draw_map = {
 
@@ -368,62 +336,49 @@ def settle_predictions():
         for row in draws
     }
 
-
     for prediction in predictions:
 
         issue = str(
             prediction[0]
         )
 
-
         if issue not in draw_map:
 
             continue
 
-
-        actual = (
-            draw_map[issue]
-        )
-
+        actual = draw_map[issue]
 
         actual_number = int(
             actual[1]
         )
 
-
-        actual_size = (
-            get_size(
-                actual_number
-            )
+        actual_size = get_size(
+            actual_number
         )
 
-
-        actual_colours = (
-            get_colours(
-                actual_number
-            )
+        actual_colours = get_colours(
+            actual_number
         )
-
 
         predicted_number = int(
             prediction[1]
         )
 
-
         predicted_size = (
             prediction[2]
         )
 
+        try:
 
-        predicted_colours = json.loads(
-            prediction[3]
-        )
+            predicted_colours = json.loads(
+                prediction[3]
+            )
 
+        except Exception:
 
-        # -------------------------
+            predicted_colours = []
+
         # 数字
-        # -------------------------
-
         if (
             predicted_number
             ==
@@ -436,11 +391,7 @@ def settle_predictions():
 
             number_result = "LOSS"
 
-
-        # -------------------------
         # 大小
-        # -------------------------
-
         if (
             predicted_size
             ==
@@ -453,21 +404,7 @@ def settle_predictions():
 
             size_result = "LOSS"
 
-
-        # -------------------------
         # 颜色
-        # -------------------------
-        #
-        # 只要预测颜色和实际颜色
-        # 有共同颜色，就算颜色 WIN
-        #
-        # 例如：
-        # 预测 0 = 红+紫
-        # 实际 2 = 红
-        # → 颜色 WIN
-        #
-        # -------------------------
-
         if set(
             predicted_colours
         ).intersection(
@@ -479,7 +416,6 @@ def settle_predictions():
         else:
 
             colour_result = "LOSS"
-
 
         update_prediction_result(
 
@@ -497,7 +433,6 @@ def settle_predictions():
 
             colour_result
         )
-
 
         print()
 
@@ -539,22 +474,16 @@ def main():
 
     create_database()
 
-
     print()
     print("=" * 60)
     print("LOTTERY AI BOT")
     print("=" * 60)
 
-
     print(
         "📡 抓取最新开奖..."
     )
 
-
-    new_count = (
-        collect_data()
-    )
-
+    new_count = collect_data()
 
     print()
 
@@ -563,15 +492,12 @@ def main():
         new_count
     )
 
-
     print(
         "数据库:",
         get_total_draws(),
         "期"
     )
 
-
-    # 先结算已经开奖的预测
     print()
 
     print(
@@ -580,8 +506,6 @@ def main():
 
     settle_predictions()
 
-
-    # 再生成下一期预测
     print()
 
     print(
@@ -589,7 +513,6 @@ def main():
     )
 
     run_prediction()
-
 
     print()
 
