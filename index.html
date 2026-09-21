@@ -10,7 +10,23 @@
     content="width=device-width, initial-scale=1.0"
 >
 
+<meta
+    http-equiv="Cache-Control"
+    content="no-cache, no-store, must-revalidate"
+>
+
+<meta
+    http-equiv="Pragma"
+    content="no-cache"
+>
+
+<meta
+    http-equiv="Expires"
+    content="0"
+>
+
 <title>Lottery AI</title>
+
 
 <style>
 
@@ -268,13 +284,6 @@ body {
     color: #ef4444;
 }
 
-.rate {
-
-    font-size: 20px;
-
-    font-weight: bold;
-}
-
 .stat-row {
 
     display: flex;
@@ -309,17 +318,6 @@ body {
     line-height: 1.6;
 
     margin-top: 18px;
-}
-
-.update-time {
-
-    text-align: center;
-
-    color: #64748b;
-
-    font-size: 12px;
-
-    margin-top: 8px;
 }
 
 @media (
@@ -382,7 +380,7 @@ body {
     id="latestIssue"
     class="issue"
 >
--
+加载中...
 </div>
 
 <div
@@ -413,7 +411,7 @@ body {
     id="predictionIssue"
     class="issue"
 >
--
+加载中...
 </div>
 
 <div
@@ -430,6 +428,7 @@ body {
 </div>
 
 <div class="top-list">
+
 
 <div class="top-item">
 
@@ -479,6 +478,7 @@ body {
 
 </div>
 
+
 </div>
 
 </div>
@@ -515,6 +515,7 @@ body {
 <div class="title">
 📊 AI 胜率统计
 </div>
+
 
 <div class="stat-row">
 
@@ -565,6 +566,7 @@ body {
 ⚙️ 系统
 </div>
 
+
 <div class="stat-row">
 
 <span>
@@ -590,14 +592,15 @@ body {
 
 </div>
 
+
 <div class="stat-row">
 
 <span>
-网页数据
+网页刷新
 </span>
 
 <span>
-GitHub Pages
+30 秒
 </span>
 
 </div>
@@ -622,17 +625,12 @@ GitHub Pages
 <script>
 
 
-/*
-=========================================================
-PYTHON 会自动更新这里的数据
-=========================================================
-*/
-
-const LOTTERY_DATA = {"status":"ONLINE","updated_at":"2026-09-21 12:18:27","total_draws":30,"latest":{"issue":"20260921100051476","number":0,"size":"小","colours":["red","violet"]},"prediction":{"issue":"20260921100051477","top1":1,"top2":5,"top3":0,"top1_score":15.5,"size":"小","colours":["green"]},"previous_result":null,"statistics":{"number":{"win":0,"loss":0,"total":0,"rate":0},"colour":{"win":0,"loss":0,"total":0,"rate":0},"size":{"win":0,"loss":0,"total":0,"rate":0}},"rules":{"size":"0-4 小 / 5-9 大","colour":"0 红+紫 / 5 绿+紫 / 13579 绿 / 2468 红"},"disclaimer":"统计模型根据历史数据进行分析，开奖结果具有随机性，不能保证预测准确。"};
+const JSON_URL =
+    "prediction.json";
 
 
 /* =====================================================
-   数字 → 大小
+   大小
 ===================================================== */
 
 function getSize(number) {
@@ -653,7 +651,7 @@ function getSize(number) {
 
 
 /* =====================================================
-   数字 → 颜色
+   颜色
 ===================================================== */
 
 function getColours(number) {
@@ -789,15 +787,50 @@ function formatStats(stats) {
 
 
 /* =====================================================
-   显示数据
+   读取 JSON
 ===================================================== */
 
-function loadData() {
+async function loadPrediction() {
 
     try {
 
+        const cacheBuster =
+            Date.now();
+
+
+        const response =
+            await fetch(
+                JSON_URL +
+                "?t=" +
+                cacheBuster,
+                {
+                    method: "GET",
+
+                    cache: "no-store",
+
+                    headers: {
+                        "Cache-Control":
+                            "no-cache",
+                        "Pragma":
+                            "no-cache"
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "无法读取 prediction.json"
+            );
+        }
+
+
         const data =
-            LOTTERY_DATA;
+            await response.json();
+
+
+        /* 状态 */
 
         document.getElementById(
             "status"
@@ -963,6 +996,7 @@ function loadData() {
         ).innerText =
             data.updated_at;
 
+
     }
 
     catch (error) {
@@ -972,12 +1006,24 @@ function loadData() {
         document.getElementById(
             "status"
         ).innerText =
-            "🔴 DATA ERROR";
+            "🔴 DATA OFFLINE";
+
     }
+
 }
 
 
-loadData();
+/* 第一次读取 */
+
+loadPrediction();
+
+
+/* 每 30 秒重新读取 */
+
+setInterval(
+    loadPrediction,
+    30000
+);
 
 
 </script>
