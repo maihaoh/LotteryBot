@@ -2,494 +2,829 @@
 <html lang="zh-CN">
 
 <head>
-    <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
 
-    <title>Lottery Predictor</title>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <style>
+<title>Lottery AI</title>
 
-        * {
-            box-sizing: border-box;
-        }
 
-        body {
-            margin: 0;
-            font-family:
-                Arial,
-                "Microsoft YaHei",
-                sans-serif;
+<style>
 
-            background: #f5f7fb;
-            color: #222;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-        }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+body {
 
-        .header h1 {
-            margin-bottom: 5px;
-        }
+    margin: 0;
 
-        .updated {
-            color: #777;
-            font-size: 14px;
-        }
+    padding: 18px;
 
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow:
-                0 4px 15px rgba(0,0,0,0.06);
-        }
+    min-height: 100vh;
 
-        .title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
+    font-family:
+        Arial,
+        "Microsoft YaHei",
+        sans-serif;
 
-        .latest {
-            display: grid;
-            grid-template-columns:
-                repeat(4, 1fr);
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #111827
+        );
 
-            gap: 10px;
-        }
+    color: white;
+}
 
-        .latest-box {
-            background: #f5f7fb;
-            border-radius: 12px;
-            padding: 14px;
-            text-align: center;
-        }
 
-        .latest-label {
-            font-size: 13px;
-            color: #777;
-        }
+.container {
 
-        .latest-value {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 6px;
-        }
+    max-width: 620px;
 
-        .prediction {
-            text-align: center;
-        }
+    margin: auto;
+}
 
-        .issue {
-            color: #777;
-            margin-bottom: 15px;
-        }
 
-        .numbers {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+.header {
 
-        .number {
-            width: 70px;
-            height: 70px;
+    text-align: center;
 
-            border-radius: 50%;
+    margin-bottom: 18px;
+}
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
 
-            font-size: 28px;
-            font-weight: bold;
+.header h1 {
 
-            background: #f0f2f5;
-        }
+    margin: 0;
 
-        .top1 {
-            border: 4px solid #ffb000;
-        }
+    font-size: 30px;
+}
 
-        .top2 {
-            border: 4px solid #999;
-        }
 
-        .top3 {
-            border: 4px solid #cd7f32;
-        }
+.status {
 
-        .score {
-            margin-top: 15px;
-            font-size: 15px;
-            color: #666;
-        }
+    margin-top: 8px;
 
-        .prediction-grid {
-            display: grid;
-            grid-template-columns:
-                repeat(2, 1fr);
+    color: #22c55e;
 
-            gap: 12px;
-        }
+    font-weight: bold;
+}
 
-        .prediction-box {
-            background: #f5f7fb;
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-        }
 
-        .prediction-label {
-            font-size: 14px;
-            color: #777;
-        }
+.card {
 
-        .prediction-value {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 8px;
-        }
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
 
-        .hot {
-            color: #e53935;
-        }
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.1
+        );
 
-        .cold {
-            color: #2979ff;
-        }
+    border-radius: 18px;
 
-        .hotcold {
-            display: grid;
-            grid-template-columns:
-                repeat(2, 1fr);
+    padding: 18px;
 
-            gap: 12px;
-        }
+    margin-bottom: 14px;
+}
 
-        .hotcold-box {
-            background: #f5f7fb;
-            border-radius: 12px;
-            padding: 15px;
-        }
 
-        .hotcold-item {
-            font-size: 17px;
-            margin: 8px 0;
-        }
+.title {
 
-        .loading {
-            text-align: center;
-            padding: 30px;
-            color: #777;
-        }
+    color: #94a3b8;
 
-        .error {
-            text-align: center;
-            padding: 30px;
-            color: #d32f2f;
-        }
+    font-size: 14px;
 
-        .footer {
-            text-align: center;
-            color: #888;
-            font-size: 12px;
-            margin-top: 25px;
-            line-height: 1.6;
-        }
+    margin-bottom: 8px;
+}
 
-        @media (max-width: 600px) {
 
-            .container {
-                padding: 12px;
-            }
+.issue {
 
-            .latest {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
+    color: #cbd5e1;
 
-            .prediction-grid {
-                grid-template-columns:
-                    1fr;
-            }
+    font-size: 15px;
+}
 
-            .hotcold {
-                grid-template-columns:
-                    1fr;
-            }
 
-            .number {
-                width: 60px;
-                height: 60px;
-                font-size: 24px;
-            }
+.big-number {
 
-        }
+    text-align: center;
 
-    </style>
+    font-size: 72px;
+
+    font-weight: bold;
+
+    margin: 10px 0;
+}
+
+
+.prediction-number {
+
+    text-align: center;
+
+    font-size: 68px;
+
+    font-weight: bold;
+
+    margin: 10px 0;
+}
+
+
+.badges {
+
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+
+.badge {
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.1
+        );
+
+    padding:
+        7px 13px;
+
+    border-radius: 20px;
+
+    font-weight: bold;
+}
+
+
+.top-list {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    gap: 10px;
+
+    margin-top: 15px;
+}
+
+
+.top-item {
+
+    text-align: center;
+
+    padding: 14px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.06
+        );
+}
+
+
+.top-number {
+
+    font-size: 30px;
+
+    font-weight: bold;
+}
+
+
+.score {
+
+    color: #94a3b8;
+
+    font-size: 12px;
+
+    margin-top: 5px;
+}
+
+
+.result-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    gap: 10px;
+}
+
+
+.result-box {
+
+    padding: 14px;
+
+    border-radius: 14px;
+
+    text-align: center;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.06
+        );
+}
+
+
+.result-name {
+
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+
+.result-status {
+
+    font-size: 24px;
+
+    margin: 6px 0;
+
+    font-weight: bold;
+}
+
+
+.win {
+
+    color: #22c55e;
+}
+
+
+.loss {
+
+    color: #ef4444;
+}
+
+
+.rate {
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+
+.stat-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 10px 0;
+
+    border-bottom:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.06
+        );
+}
+
+
+.stat-row:last-child {
+
+    border-bottom: none;
+}
+
+
+.footer {
+
+    text-align: center;
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+    margin-top: 18px;
+}
+
+
+@media (
+    max-width: 450px
+) {
+
+    body {
+        padding: 10px;
+    }
+
+    .big-number {
+        font-size: 62px;
+    }
+
+    .prediction-number {
+        font-size: 58px;
+    }
+
+    .result-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
+</style>
 
 </head>
 
+
 <body>
+
 
 <div class="container">
 
-    <div class="header">
 
-        <h1>🎯 Lottery Predictor</h1>
+<div class="header">
 
-        <div class="updated"
-             id="updated">
-            正在读取数据...
-        </div>
+<h1>🎯 LOTTERY AI</h1>
 
-    </div>
+<div
+    id="status"
+    class="status"
+>
+🟢 ONLINE
+</div>
 
+</div>
 
-    <!-- 最新开奖 -->
 
-    <div class="card">
+<!-- 最新开奖 -->
 
-        <div class="title">
-            📌 最新开奖
-        </div>
+<div class="card">
 
-        <div class="latest">
+<div class="title">
+📡 最新开奖
+</div>
 
-            <div class="latest-box">
 
-                <div class="latest-label">
-                    期号
-                </div>
+<div
+    id="latestIssue"
+    class="issue"
+>
+-
+</div>
 
-                <div class="latest-value"
-                     id="latestIssue">
-                    -
-                </div>
 
-            </div>
+<div
+    id="latestNumber"
+    class="big-number"
+>
+-
+</div>
 
 
-            <div class="latest-box">
+<div
+    id="latestBadges"
+    class="badges"
+>
+</div>
 
-                <div class="latest-label">
-                    数字
-                </div>
+</div>
 
-                <div class="latest-value"
-                     id="latestNumber">
-                    -
-                </div>
 
-            </div>
+<!-- 下一期预测 -->
 
+<div class="card">
 
-            <div class="latest-box">
+<div class="title">
+🔮 下一期预测
+</div>
 
-                <div class="latest-label">
-                    颜色
-                </div>
 
-                <div class="latest-value"
-                     id="latestColour">
-                    -
-                </div>
+<div
+    id="predictionIssue"
+    class="issue"
+>
+-
+</div>
 
-            </div>
 
+<div
+    id="predictionNumber"
+    class="prediction-number"
+>
+-
+</div>
 
-            <div class="latest-box">
 
-                <div class="latest-label">
-                    大小
-                </div>
+<div
+    id="predictionBadges"
+    class="badges"
+>
+</div>
 
-                <div class="latest-value"
-                     id="latestSize">
-                    -
-                </div>
 
-            </div>
+<div class="top-list">
 
-        </div>
 
-    </div>
+<div class="top-item">
 
+<div>🥇</div>
 
-    <!-- 下一期预测 -->
+<div
+    id="top1"
+    class="top-number"
+>
+-
+</div>
 
-    <div class="card prediction">
+<div
+    id="score1"
+    class="score"
+>
+-
+</div>
 
-        <div class="title">
-            🎯 下一期统计预测
-        </div>
+</div>
 
-        <div class="issue">
 
-            预测期号：
+<div class="top-item">
 
-            <strong id="predictionIssue">
-                -
-            </strong>
+<div>🥈</div>
 
-        </div>
+<div
+    id="top2"
+    class="top-number"
+>
+-
+</div>
 
+</div>
 
-        <div class="numbers">
 
-            <div class="number top1"
-                 id="top1">
-                -
-            </div>
+<div class="top-item">
 
-            <div class="number top2"
-                 id="top2">
-                -
-            </div>
+<div>🥉</div>
 
-            <div class="number top3"
-                 id="top3">
-                -
-            </div>
+<div
+    id="top3"
+    class="top-number"
+>
+-
+</div>
 
-        </div>
+</div>
 
 
-        <div class="score">
+</div>
 
-            Top 1 综合分：
+</div>
 
-            <strong id="top1Score">
-                -
-            </strong>
 
-        </div>
+<!-- 上一期 -->
 
-    </div>
+<div class="card">
 
+<div class="title">
+📋 上一期预测结果
+</div>
 
-    <!-- 大小 / 颜色 -->
 
-    <div class="card">
+<div
+    id="previousIssue"
+    class="issue"
+>
+暂无结算数据
+</div>
 
-        <div class="title">
-            📊 统计倾向
-        </div>
 
-        <div class="prediction-grid">
+<div
+    id="previousResults"
+    class="result-grid"
+>
+</div>
 
-            <div class="prediction-box">
+</div>
 
-                <div class="prediction-label">
-                    大小
-                </div>
 
-                <div class="prediction-value"
-                     id="predictionSize">
-                    -
-                </div>
+<!-- 胜率 -->
 
-            </div>
+<div class="card">
 
+<div class="title">
+📊 AI 胜率统计
+</div>
 
-            <div class="prediction-box">
 
-                <div class="prediction-label">
-                    颜色
-                </div>
+<div class="stat-row">
 
-                <div class="prediction-value"
-                     id="predictionColour">
-                    -
-                </div>
+<span>
+🔢 数字
+</span>
 
-            </div>
+<span
+    id="numberStats"
+>
+-
+</span>
 
-        </div>
+</div>
 
-    </div>
 
+<div class="stat-row">
 
-    <!-- 热号 / 冷号 -->
+<span>
+🎨 颜色
+</span>
 
-    <div class="card">
+<span
+    id="colourStats"
+>
+-
+</span>
 
-        <div class="title">
-            🔥❄️ 最近50期冷热号
-        </div>
+</div>
 
-        <div class="hotcold">
 
-            <div class="hotcold-box">
+<div class="stat-row">
 
-                <div class="hot">
-                    🔥 热号
-                </div>
+<span>
+📏 大小
+</span>
 
-                <div id="hotNumbers">
-                    -
-                </div>
+<span
+    id="sizeStats"
+>
+-
+</span>
 
-            </div>
+</div>
 
+</div>
 
-            <div class="hotcold-box">
 
-                <div class="cold">
-                    ❄️ 冷号
-                </div>
+<!-- 系统 -->
 
-                <div id="coldNumbers">
-                    -
-                </div>
+<div class="card">
 
-            </div>
+<div class="title">
+⚙️ 系统
+</div>
 
-        </div>
 
-    </div>
+<div class="stat-row">
 
+<span>
+数据库
+</span>
 
-    <div class="footer">
+<span
+    id="totalDraws"
+>
+-
+</span>
 
-        本页面由 GitHub Actions 自动更新。<br>
+</div>
 
-        以上内容为历史数据统计模型结果，
-        不代表开奖结果，也不能保证预测准确。
 
-    </div>
+<div class="stat-row">
+
+<span>
+最后更新
+</span>
+
+<span
+    id="updatedAt"
+>
+-
+</span>
+
+</div>
+
+
+<div class="stat-row">
+
+<span>
+网页刷新
+</span>
+
+<span>
+30 秒
+</span>
+
+</div>
+
+</div>
+
+
+<div class="footer">
+
+模型根据历史开奖数据自动调整统计权重。<br>
+
+数字、颜色、大小分别独立统计胜率。<br>
+
+开奖结果具有随机性，不能保证预测准确。
+
+</div>
+
 
 </div>
 
 
 <script>
 
+
+const JSON_URL =
+    "prediction.json";
+
+
+function getSize(number) {
+
+    number = Number(number);
+
+    if (
+        number >= 0 &&
+        number <= 4
+    ) {
+
+        return "🔵 小";
+
+    }
+
+    return "🟠 大";
+}
+
+
+function getColours(number) {
+
+    number = Number(number);
+
+
+    if (number === 0) {
+
+        return [
+            "🔴 红色",
+            "🟣 紫色"
+        ];
+
+    }
+
+
+    if (number === 5) {
+
+        return [
+            "🟢 绿色",
+            "🟣 紫色"
+        ];
+
+    }
+
+
+    if (
+        number === 1 ||
+        number === 3 ||
+        number === 7 ||
+        number === 9
+    ) {
+
+        return [
+            "🟢 绿色"
+        ];
+
+    }
+
+
+    return [
+        "🔴 红色"
+    ];
+}
+
+
+function createBadges(number) {
+
+    const colours =
+        getColours(number);
+
+
+    colours.push(
+        getSize(number)
+    );
+
+
+    return colours
+        .map(
+            item =>
+                `<span class="badge">${item}</span>`
+        )
+        .join("");
+}
+
+
+function resultBox(
+    name,
+    result
+) {
+
+    if (!result) {
+
+        return `
+            <div class="result-box">
+                <div class="result-name">
+                    ${name}
+                </div>
+                <div class="result-status">
+                    -
+                </div>
+            </div>
+        `;
+
+    }
+
+
+    const isWin =
+        result === "WIN";
+
+
+    return `
+        <div class="result-box">
+            <div class="result-name">
+                ${name}
+            </div>
+
+            <div class="result-status ${
+                isWin
+                    ? "win"
+                    : "loss"
+            }">
+
+                ${
+                    isWin
+                        ? "✅ WIN"
+                        : "❌ LOSS"
+                }
+
+            </div>
+        </div>
+    `;
+}
+
+
+function formatStats(
+    stats
+) {
+
+    return `
+        ${stats.rate}%
+        （${stats.win}胜 /
+        ${stats.loss}负）
+    `;
+}
+
+
 async function loadPrediction() {
 
     try {
 
-        /*
-         * 加时间戳避免浏览器缓存旧的 JSON
-         */
-
         const response =
             await fetch(
-                "prediction.json?t="
-                + Date.now()
+                JSON_URL +
+                "?t=" +
+                Date.now(),
+                {
+                    cache:
+                        "no-store"
+                }
             );
+
 
         if (!response.ok) {
 
@@ -499,168 +834,177 @@ async function loadPrediction() {
 
         }
 
+
         const data =
             await response.json();
 
 
-        /*
-         * 更新时间
-         */
+        // 状态
 
         document.getElementById(
-            "updated"
-        ).textContent =
-            "更新时间："
-            + data.updated_at
-            + "　｜　数据库："
-            + data.total_draws
-            + " 期";
+            "status"
+        ).innerText =
+            "🟢 ONLINE";
 
 
-        /*
-         * 最新开奖
-         */
+        // 最新开奖
 
         document.getElementById(
             "latestIssue"
-        ).textContent =
+        ).innerText =
+            "期号：" +
             data.latest.issue;
+
 
         document.getElementById(
             "latestNumber"
-        ).textContent =
+        ).innerText =
             data.latest.number;
 
-        document.getElementById(
-            "latestColour"
-        ).textContent =
-            data.latest.colour;
 
         document.getElementById(
-            "latestSize"
-        ).textContent =
-            data.latest.size;
+            "latestBadges"
+        ).innerHTML =
+            createBadges(
+                data.latest.number
+            );
 
 
-        /*
-         * 下一期
-         */
+        // 下一期
 
         document.getElementById(
             "predictionIssue"
-        ).textContent =
+        ).innerText =
+            "预测期号：" +
             data.prediction.issue;
 
 
         document.getElementById(
-            "top1"
-        ).textContent =
+            "predictionNumber"
+        ).innerText =
             data.prediction.top1;
+
+
+        document.getElementById(
+            "predictionBadges"
+        ).innerHTML =
+            createBadges(
+                data.prediction.top1
+            );
+
+
+        // Top 3
+
+        document.getElementById(
+            "top1"
+        ).innerText =
+            data.prediction.top1;
+
 
         document.getElementById(
             "top2"
-        ).textContent =
+        ).innerText =
             data.prediction.top2;
+
 
         document.getElementById(
             "top3"
-        ).textContent =
+        ).innerText =
             data.prediction.top3;
 
 
         document.getElementById(
-            "top1Score"
-        ).textContent =
-            data.prediction.top1_score
-            + "%";
+            "score1"
+        ).innerText =
+            data.prediction.top1_score +
+            "%";
 
 
-        /*
-         * 大小 / 颜色
-         */
+        // 上一期
 
-        document.getElementById(
-            "predictionSize"
-        ).textContent =
-            data.prediction.size;
+        const previous =
+            data.previous_result;
 
 
-        document.getElementById(
-            "predictionColour"
-        ).textContent =
-            data.prediction.colour;
+        if (previous) {
 
-
-        /*
-         * 热号
-         */
-
-        const hotContainer =
             document.getElementById(
-                "hotNumbers"
-            );
+                "previousIssue"
+            ).innerText =
+                "期号：" +
+                previous.issue +
+                "｜预测 " +
+                previous.predicted_number +
+                " → 实际 " +
+                previous.actual_number;
 
-        hotContainer.innerHTML = "";
 
-        data.hot_numbers.forEach(
-            item => {
+            document.getElementById(
+                "previousResults"
+            ).innerHTML =
 
-                const div =
-                    document.createElement(
-                        "div"
-                    );
+                resultBox(
+                    "🔢 数字",
+                    previous.number_result
+                )
 
-                div.className =
-                    "hotcold-item";
+                +
 
-                div.textContent =
-                    item.number
-                    + "　("
-                    + item.count
-                    + " 次)";
+                resultBox(
+                    "🎨 颜色",
+                    previous.colour_result
+                )
 
-                hotContainer.appendChild(
-                    div
+                +
+
+                resultBox(
+                    "📏 大小",
+                    previous.size_result
                 );
 
-            }
-        );
+        }
 
 
-        /*
-         * 冷号
-         */
+        // 胜率
 
-        const coldContainer =
-            document.getElementById(
-                "coldNumbers"
+        document.getElementById(
+            "numberStats"
+        ).innerText =
+            formatStats(
+                data.statistics.number
             );
 
-        coldContainer.innerHTML = "";
 
-        data.cold_numbers.forEach(
-            item => {
+        document.getElementById(
+            "colourStats"
+        ).innerText =
+            formatStats(
+                data.statistics.colour
+            );
 
-                const div =
-                    document.createElement(
-                        "div"
-                    );
 
-                div.className =
-                    "hotcold-item";
+        document.getElementById(
+            "sizeStats"
+        ).innerText =
+            formatStats(
+                data.statistics.size
+            );
 
-                div.textContent =
-                    item.number
-                    + "　("
-                    + item.count
-                    + " 次)";
 
-                coldContainer.appendChild(
-                    div
-                );
+        // 系统
 
-            }
-        );
+        document.getElementById(
+            "totalDraws"
+        ).innerText =
+            data.total_draws +
+            " 期";
+
+
+        document.getElementById(
+            "updatedAt"
+        ).innerText =
+            data.updated_at;
+
 
     }
 
@@ -668,38 +1012,31 @@ async function loadPrediction() {
 
         console.error(error);
 
-        document.body.innerHTML +=
-            `
-            <div class="error">
-                ❌ 无法读取预测数据
-                <br>
-                请确认 prediction.json
-                已经上传到 GitHub。
-            </div>
-            `;
+        document.getElementById(
+            "status"
+        ).innerText =
+            "🔴 DATA OFFLINE";
 
     }
 
 }
 
 
-/*
- * 第一次打开网页立即读取
- */
+// 第一次读取
 
 loadPrediction();
 
 
-/*
- * 每 30 秒重新读取一次
- */
+// 每 30 秒刷新网页
 
 setInterval(
     loadPrediction,
     30000
 );
 
+
 </script>
+
 
 </body>
 
