@@ -1,46 +1,61 @@
 {
   "status": "ONLINE",
-  "updated_at": "2026-09-21 12:18:27",
-  "total_draws": 30,
+  "updated_at": "2026-09-21 12:22:43",
+  "total_draws": 39,
   "latest": {
-    "issue": "20260921100051476",
-    "number": 0,
-    "size": "小",
+    "issue": "20260921100051485",
+    "number": 8,
+    "size": "大",
     "colours": [
-      "red",
-      "violet"
+      "red"
     ]
   },
   "prediction": {
-    "issue": "20260921100051477",
-    "top1": 1,
-    "top2": 5,
-    "top3": 0,
-    "top1_score": 15.5,
-    "size": "小",
+    "issue": "20260921100051486",
+    "top1": 5,
+    "top2": 0,
+    "top3": 1,
+    "top1_score": 17.49,
+    "size": "大",
     "colours": [
-      "green"
+      "green",
+      "violet"
     ]
   },
-  "previous_result": null,
+  "previous_result": {
+    "issue": "20260921100051477",
+    "predicted_number": 1,
+    "predicted_size": "小",
+    "predicted_colours": [
+      "green"
+    ],
+    "actual_number": 8,
+    "actual_size": "大",
+    "actual_colours": [
+      "red"
+    ],
+    "number_result": "LOSS",
+    "size_result": "LOSS",
+    "colour_result": "LOSS"
+  },
   "statistics": {
     "number": {
       "win": 0,
-      "loss": 0,
-      "total": 0,
-      "rate": 0
+      "loss": 1,
+      "total": 1,
+      "rate": 0.0
     },
     "colour": {
       "win": 0,
-      "loss": 0,
-      "total": 0,
-      "rate": 0
+      "loss": 1,
+      "total": 1,
+      "rate": 0.0
     },
     "size": {
       "win": 0,
-      "loss": 0,
-      "total": 0,
-      "rate": 0
+      "loss": 1,
+      "total": 1,
+      "rate": 0.0
     }
   },
   "rules": {
