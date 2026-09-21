@@ -10,7 +10,6 @@ from database import (
 
 
 OUTPUT_FILE = "prediction.json"
-HTML_FILE = "index.html"
 
 
 WINDOWS = [
@@ -69,7 +68,7 @@ def get_colours(number):
 
 
 # =========================================================
-# 统计数字
+# 数字统计
 # =========================================================
 
 def calculate_scores(rows):
@@ -83,7 +82,6 @@ def calculate_scores(rows):
 
     for number in range(10):
 
-        # 全历史
         all_count = sum(
             1
             for row in rows
@@ -94,7 +92,6 @@ def calculate_scores(rows):
             all_count / total * 100
         )
 
-        # 最近窗口
         window_rates = []
 
         for window in WINDOWS:
@@ -118,7 +115,6 @@ def calculate_scores(rows):
 
             window_rates.append(rate)
 
-        # 数据不足时使用全部数据
         if not window_rates:
 
             recent = rows
@@ -137,7 +133,6 @@ def calculate_scores(rows):
 
         else:
 
-            # 越新的窗口权重越高
             weights = list(
                 range(
                     1,
@@ -159,7 +154,6 @@ def calculate_scores(rows):
                 / sum(weights)
             )
 
-        # 综合评分
         score = (
             all_rate * 0.35
             +
@@ -168,13 +162,17 @@ def calculate_scores(rows):
 
         scores[number] = {
 
-            "score": score,
+            "score":
+                score,
 
-            "all_rate": all_rate,
+            "all_rate":
+                all_rate,
 
-            "recent_rate": recent_average,
+            "recent_rate":
+                recent_average,
 
-            "all_count": all_count
+            "all_count":
+                all_count
         }
 
     return scores
@@ -199,9 +197,13 @@ def generate_prediction(rows):
     top2 = ranking[1]
     top3 = ranking[2]
 
-    predicted_size = get_size(top1)
+    predicted_size = get_size(
+        top1
+    )
 
-    predicted_colours = get_colours(top1)
+    predicted_colours = get_colours(
+        top1
+    )
 
     return (
         ranking,
@@ -212,40 +214,20 @@ def generate_prediction(rows):
 
 
 # =========================================================
-# 颜色显示
+# 保存预测
 # =========================================================
 
-def colour_name(colours):
-
-    mapping = {
-
-        "red":
-            "🔴 红色",
-
-        "green":
-            "🟢 绿色",
-
-        "violet":
-            "🟣 紫色"
-    }
-
-    return [
-        mapping[c]
-        for c in colours
-        if c in mapping
-    ]
-
-
-# =========================================================
-# 创建网页数据
-# =========================================================
-
-def build_web_data():
+def main():
 
     rows = get_all_draws()
 
     if not rows:
-        return None
+
+        print(
+            "❌ Database 没有开奖数据"
+        )
+
+        return
 
     (
         ranking,
@@ -294,23 +276,23 @@ def build_web_data():
 
         try:
 
-            predicted_colours_previous = json.loads(
+            previous_predicted_colours = json.loads(
                 previous[3]
             )
 
         except Exception:
 
-            predicted_colours_previous = []
+            previous_predicted_colours = []
 
         try:
 
-            actual_colours_previous = json.loads(
+            previous_actual_colours = json.loads(
                 previous[6]
             )
 
         except Exception:
 
-            actual_colours_previous = []
+            previous_actual_colours = []
 
         previous_data = {
 
@@ -324,7 +306,7 @@ def build_web_data():
                 previous[2],
 
             "predicted_colours":
-                predicted_colours_previous,
+                previous_predicted_colours,
 
             "actual_number":
                 previous[4],
@@ -333,7 +315,7 @@ def build_web_data():
                 previous[5],
 
             "actual_colours":
-                actual_colours_previous,
+                previous_actual_colours,
 
             "number_result":
                 previous[7],
@@ -344,6 +326,10 @@ def build_web_data():
             "colour_result":
                 previous[9]
         }
+
+    # =====================================================
+    # JSON
+    # =====================================================
 
     data = {
 
@@ -423,15 +409,6 @@ def build_web_data():
             "统计模型根据历史数据进行分析，开奖结果具有随机性，不能保证预测准确。"
     }
 
-    return data
-
-
-# =========================================================
-# 保存 JSON 备用
-# =========================================================
-
-def save_json(data):
-
     with open(
         OUTPUT_FILE,
         "w",
@@ -445,132 +422,9 @@ def save_json(data):
             indent=2
         )
 
-
-# =========================================================
-# 直接更新 index.html
-# =========================================================
-
-def update_html(data):
-
-    try:
-
-        with open(
-            HTML_FILE,
-            "r",
-            encoding="utf-8"
-        ) as file:
-
-            html = file.read()
-
-    except FileNotFoundError:
-
-        print(
-            "❌ 找不到 index.html"
-        )
-
-        return False
-
-    data_json = json.dumps(
-        data,
-        ensure_ascii=False,
-        separators=(
-            ",",
-            ":"
-        )
-    )
-
-    start_marker = (
-        "const LOTTERY_DATA = "
-    )
-
-    end_marker = (
-        ";\n"
-    )
-
-    start = html.find(
-        start_marker
-    )
-
-    if start == -1:
-
-        print(
-            "❌ index.html 找不到 "
-            "'const LOTTERY_DATA = '"
-        )
-
-        return False
-
-    value_start = (
-        start
-        +
-        len(start_marker)
-    )
-
-    end = html.find(
-        end_marker,
-        value_start
-    )
-
-    if end == -1:
-
-        print(
-            "❌ index.html 数据结束位置找不到"
-        )
-
-        return False
-
-    new_html = (
-        html[:value_start]
-        +
-        data_json
-        +
-        html[end:]
-    )
-
-    with open(
-        HTML_FILE,
-        "w",
-        encoding="utf-8"
-    ) as file:
-
-        file.write(
-            new_html
-        )
-
-    print(
-        "✅ index.html 已更新"
-    )
-
-    return True
-
-
-# =========================================================
-# MAIN
-# =========================================================
-
-def main():
-
-    data = build_web_data()
-
-    if not data:
-
-        print(
-            "❌ Database 没有开奖数据"
-        )
-
-        return
-
-    # JSON 继续保留作为备用
-    save_json(data)
-
-    # 直接把最新数据写入网页
-    update_html(data)
-
-    latest = data["latest"]
-
-    prediction = data["prediction"]
-
-    stats = data["statistics"]
+    # =====================================================
+    # Console
+    # =====================================================
 
     print()
     print("=" * 60)
@@ -579,54 +433,52 @@ def main():
 
     print(
         "数据库:",
-        data["total_draws"],
+        len(rows),
         "期"
     )
 
     print(
         "最新:",
-        latest["issue"],
+        latest_issue,
         "→",
-        latest["number"]
+        latest_number
     )
 
     print()
 
     print(
         "下一期:",
-        prediction["issue"]
+        next_issue
     )
 
     print(
         "Top 1:",
-        prediction["top1"],
-        f"({prediction['top1_score']:.2f}%)"
+        top1,
+        f"({scores[top1]['score']:.2f}%)"
     )
 
     print(
         "Top 2:",
-        prediction["top2"]
+        top2,
+        f"({scores[top2]['score']:.2f}%)"
     )
 
     print(
         "Top 3:",
-        prediction["top3"]
+        top3,
+        f"({scores[top3]['score']:.2f}%)"
     )
 
     print()
 
     print(
         "大小:",
-        prediction["size"]
+        predicted_size
     )
 
     print(
         "颜色:",
-        ", ".join(
-            colour_name(
-                prediction["colours"]
-            )
-        )
+        predicted_colours
     )
 
     print()
@@ -649,12 +501,6 @@ def main():
         "大小:",
         stats["size"]["rate"],
         "%"
-    )
-
-    print()
-
-    print(
-        "🌐 index.html 已直接写入最新数据"
     )
 
     print("=" * 60)
