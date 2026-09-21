@@ -1,1 +1,47 @@
-
+{
+  "updated_at": "2026-09-21 11:19:23",
+  "total_draws": 10,
+  "latest": {
+    "issue": "20260921100051358",
+    "number": 9,
+    "colour": "green",
+    "size": "大"
+  },
+  "prediction": {
+    "issue": "20260921100051359",
+    "top1": 2,
+    "top2": 4,
+    "top3": 8,
+    "top1_score": 20.0,
+    "size": "小",
+    "colour": "red"
+  },
+  "hot_numbers": [
+    {
+      "number": 2,
+      "count": 2
+    },
+    {
+      "number": 4,
+      "count": 2
+    },
+    {
+      "number": 8,
+      "count": 2
+    }
+  ],
+  "cold_numbers": [
+    {
+      "number": 1,
+      "count": 0
+    },
+    {
+      "number": 5,
+      "count": 0
+    },
+    {
+      "number": 6,
+      "count": 0
+    }
+  ]
+}
