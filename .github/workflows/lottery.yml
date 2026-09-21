@@ -20,31 +20,18 @@ jobs:
 
     steps:
 
-      # =====================================================
-      # Checkout
-      # =====================================================
-
       - name: Checkout repository
 
         uses: actions/checkout@v4
 
-
-      # =====================================================
-      # Python
-      # =====================================================
 
       - name: Setup Python
 
         uses: actions/setup-python@v5
 
         with:
-
           python-version: "3.12"
 
-
-      # =====================================================
-      # Install
-      # =====================================================
 
       - name: Install dependencies
 
@@ -55,10 +42,6 @@ jobs:
           python -m pip install -r requirements.txt
 
 
-      # =====================================================
-      # Run Bot
-      # =====================================================
-
       - name: Run Lottery Bot
 
         run: |
@@ -66,11 +49,7 @@ jobs:
           python lottery_bot.py
 
 
-      # =====================================================
-      # Save files
-      # =====================================================
-
-      - name: Save database and webpage
+      - name: Save database and prediction
 
         run: |
 
@@ -79,10 +58,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
 
-          git add lottery.db prediction.json index.html
+          git add lottery.db prediction.json
 
 
-          git diff --cached --quiet || git commit -m "Auto update lottery webpage"
+          git diff --cached --quiet || git commit -m "Auto update lottery data"
 
 
           git push
