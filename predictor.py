@@ -1,14 +1,16 @@
 import sqlite3
+import json
 from collections import Counter
+from datetime import datetime
 
 # ============================================================
 # Lottery Predictor
 # Database: lottery.db
-# Table: draws
 # ============================================================
 
 DB_FILE = "lottery.db"
 RECENT_LIMIT = 50
+OUTPUT_FILE = "prediction.json"
 
 
 # ============================================================
@@ -56,22 +58,15 @@ def count_sizes(rows):
 
 
 def count_colours(rows):
-    """
-    颜色可能出现：
-    red
-    green
-    red,violet
-    green,violet
-
-    如果包含 violet，则同时统计 violet。
-    """
 
     counter = Counter()
 
     for row in rows:
+
         colour = str(row[2]).lower()
 
         for c in colour.split(","):
+
             c = c.strip()
 
             if c:
@@ -89,9 +84,6 @@ def get_recent(rows, limit=RECENT_LIMIT):
 
 
 def get_current_streak(rows, index):
-    """
-    从最新一期开始计算连续相同结果。
-    """
 
     if not rows:
         return None, 0
@@ -100,8 +92,10 @@ def get_current_streak(rows, index):
     streak = 0
 
     for row in reversed(rows):
+
         if row[index] == latest_value:
             streak += 1
+
         else:
             break
 
@@ -113,15 +107,11 @@ def get_current_streak(rows, index):
 # ============================================================
 
 def calculate_number_scores(rows):
-    """
-    综合评分：
-
-    全历史频率 60%
-    最近50期频率 40%
-    """
 
     all_counter = count_numbers(rows)
+
     recent_rows = get_recent(rows)
+
     recent_counter = count_numbers(recent_rows)
 
     total_all = len(rows)
@@ -159,7 +149,7 @@ def calculate_number_scores(rows):
 
 
 # ============================================================
-# Hot / Cold numbers
+# Hot / Cold
 # ============================================================
 
 def get_hot_cold(rows):
@@ -189,10 +179,16 @@ def get_hot_cold(rows):
 def predict_size(rows):
 
     all_counter = count_sizes(rows)
-    recent_counter = count_sizes(get_recent(rows))
+
+    recent_counter = count_sizes(
+        get_recent(rows)
+    )
 
     total_all = len(rows)
-    total_recent = len(get_recent(rows))
+
+    total_recent = len(
+        get_recent(rows)
+    )
 
     scores = {}
 
@@ -235,12 +231,16 @@ def predict_size(rows):
 def predict_colour(rows):
 
     all_counter = count_colours(rows)
+
     recent_counter = count_colours(
         get_recent(rows)
     )
 
     total_all = len(rows)
-    total_recent = len(get_recent(rows))
+
+    total_recent = len(
+        get_recent(rows)
+    )
 
     scores = {}
 
@@ -277,7 +277,101 @@ def predict_colour(rows):
 
 
 # ============================================================
-# Display helpers
+# Save prediction for website
+# ============================================================
+
+def save_prediction_json(
+    rows,
+    next_issue,
+    ranking,
+    size_prediction,
+    colour_prediction
+):
+
+    number_scores = calculate_number_scores(rows)
+
+    hot, cold, counter = get_hot_cold(rows)
+
+    latest_issue = rows[-1][0]
+    latest_number = int(rows[-1][1])
+    latest_colour = rows[-1][2]
+    latest_size = rows[-1][3]
+
+    data = {
+
+        "updated_at": datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        ),
+
+        "total_draws": len(rows),
+
+        "latest": {
+
+            "issue": latest_issue,
+            "number": latest_number,
+            "colour": latest_colour,
+            "size": latest_size
+
+        },
+
+        "prediction": {
+
+            "issue": next_issue,
+
+            "top1": ranking[0],
+            "top2": ranking[1],
+            "top3": ranking[2],
+
+            "top1_score": round(
+                number_scores[ranking[0]]["score"],
+                2
+            ),
+
+            "size": size_prediction,
+
+            "colour": colour_prediction
+
+        },
+
+        "hot_numbers": [
+            {
+                "number": n,
+                "count": counter[n]
+            }
+            for n in hot[:3]
+        ],
+
+        "cold_numbers": [
+            {
+                "number": n,
+                "count": counter[n]
+            }
+            for n in cold[:3]
+        ]
+
+    }
+
+    with open(
+        OUTPUT_FILE,
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        json.dump(
+            data,
+            file,
+            ensure_ascii=False,
+            indent=2
+        )
+
+    print()
+    print(
+        f"✅ 已生成 {OUTPUT_FILE}"
+    )
+
+
+# ============================================================
+# Display
 # ============================================================
 
 def print_number_analysis(rows):
@@ -315,10 +409,12 @@ def print_number_analysis(rows):
         )
 
     print()
-
     print("Top 3 数字：")
 
-    for i, number in enumerate(ranking[:3], 1):
+    for i, number in enumerate(
+        ranking[:3],
+        1
+    ):
 
         data = scores[number]
 
@@ -350,7 +446,10 @@ def print_size_analysis(rows):
             f"最近50期 {data['recent_rate']:.2f}%"
         )
 
-    latest, streak = get_current_streak(rows, 3)
+    latest, streak = get_current_streak(
+        rows,
+        3
+    )
 
     print()
     print(
@@ -373,7 +472,11 @@ def print_colour_analysis(rows):
     print("颜色分析")
     print("==================================================")
 
-    for colour in ["red", "green", "violet"]:
+    for colour in [
+        "red",
+        "green",
+        "violet"
+    ]:
 
         data = scores[colour]
 
@@ -384,7 +487,10 @@ def print_colour_analysis(rows):
             f"最近50期 {data['recent_rate']:.2f}%"
         )
 
-    latest, streak = get_current_streak(rows, 2)
+    latest, streak = get_current_streak(
+        rows,
+        2
+    )
 
     print()
     print(
@@ -397,10 +503,6 @@ def print_colour_analysis(rows):
 
     return prediction
 
-
-# ============================================================
-# Hot / Cold analysis
-# ============================================================
 
 def print_hot_cold(rows):
 
@@ -428,10 +530,6 @@ def print_hot_cold(rows):
     )
 
 
-# ============================================================
-# Recent history
-# ============================================================
-
 def print_recent_history(rows):
 
     print()
@@ -439,7 +537,9 @@ def print_recent_history(rows):
     print("最近开奖结果")
     print("==================================================")
 
-    for row in reversed(rows[-10:]):
+    for row in reversed(
+        rows[-10:]
+    ):
 
         issue, number, colour, size = row
 
@@ -452,7 +552,7 @@ def print_recent_history(rows):
 
 
 # ============================================================
-# Main prediction
+# Main
 # ============================================================
 
 def main():
@@ -460,7 +560,11 @@ def main():
     rows = load_draws()
 
     if not rows:
-        print("数据库没有有效开奖数据。")
+
+        print(
+            "数据库没有有效开奖数据。"
+        )
+
         return
 
     print()
@@ -468,83 +572,119 @@ def main():
     print("LOTTERY AI PREDICTOR")
     print("==================================================")
 
-    print(f"数据库：{DB_FILE}")
-    print(f"有效开奖数量：{len(rows)}")
+    print(
+        f"数据库：{DB_FILE}"
+    )
+
+    print(
+        f"有效开奖数量：{len(rows)}"
+    )
 
     latest_issue = rows[-1][0]
 
     try:
-        next_issue = str(int(latest_issue) + 1)
+
+        next_issue = str(
+            int(latest_issue) + 1
+        )
+
     except ValueError:
+
         next_issue = "下一期"
 
-    print(f"最新期号：{latest_issue}")
-    print(f"预测期号：{next_issue}")
+    print(
+        f"最新期号：{latest_issue}"
+    )
 
-    # --------------------------------------------------------
-    # Number
-    # --------------------------------------------------------
+    print(
+        f"预测期号：{next_issue}"
+    )
 
     ranking = print_number_analysis(rows)
 
-    # --------------------------------------------------------
-    # Size
-    # --------------------------------------------------------
-
     size_prediction = print_size_analysis(rows)
-
-    # --------------------------------------------------------
-    # Colour
-    # --------------------------------------------------------
 
     colour_prediction = print_colour_analysis(rows)
 
-    # --------------------------------------------------------
-    # Hot / Cold
-    # --------------------------------------------------------
-
     print_hot_cold(rows)
 
-    # --------------------------------------------------------
-    # Recent history
-    # --------------------------------------------------------
-
     print_recent_history(rows)
-
-    # --------------------------------------------------------
-    # Final prediction
-    # --------------------------------------------------------
 
     top1 = ranking[0]
     top2 = ranking[1]
     top3 = ranking[2]
 
-    top1_score = calculate_number_scores(rows)[top1]["score"]
+    top1_score = calculate_number_scores(
+        rows
+    )[top1]["score"]
 
     print()
     print("==================================================")
     print("🎯 下一期统计预测")
     print("==================================================")
 
-    print(f"预测期号   : {next_issue}")
+    print(
+        f"预测期号   : {next_issue}"
+    )
+
     print()
-    print(f"数字 Top 1 : {top1}")
-    print(f"数字 Top 2 : {top2}")
-    print(f"数字 Top 3 : {top3}")
+
+    print(
+        f"数字 Top 1 : {top1}"
+    )
+
+    print(
+        f"数字 Top 2 : {top2}"
+    )
+
+    print(
+        f"数字 Top 3 : {top3}"
+    )
+
     print()
-    print(f"大小       : {size_prediction}")
-    print(f"颜色       : {colour_prediction}")
+
+    print(
+        f"大小       : {size_prediction}"
+    )
+
+    print(
+        f"颜色       : {colour_prediction}"
+    )
+
     print()
-    print(f"数字综合分 : {top1_score:.2f}%")
+
+    print(
+        f"数字综合分 : {top1_score:.2f}%"
+    )
+
+    # ========================================================
+    # Generate JSON
+    # ========================================================
+
+    save_prediction_json(
+        rows,
+        next_issue,
+        ranking,
+        size_prediction,
+        colour_prediction
+    )
 
     print()
     print("==================================================")
     print("⚠️ 注意")
     print("==================================================")
-    print("以上是基于历史数据的统计模型，不代表开奖结果。")
-    print("彩票开奖结果具有随机性，不能保证预测准确。")
+
+    print(
+        "以上是基于历史数据的统计模型，不代表开奖结果。"
+    )
+
+    print(
+        "彩票开奖结果具有随机性，不能保证预测准确。"
+    )
+
     print("==================================================")
 
 
 if __name__ == "__main__":
+
     main()
