@@ -12,13 +12,11 @@
 
 <title>Lottery AI</title>
 
-
 <style>
 
 * {
     box-sizing: border-box;
 }
-
 
 body {
 
@@ -43,14 +41,12 @@ body {
     color: white;
 }
 
-
 .container {
 
     max-width: 620px;
 
     margin: auto;
 }
-
 
 .header {
 
@@ -59,14 +55,12 @@ body {
     margin-bottom: 18px;
 }
 
-
 .header h1 {
 
     margin: 0;
 
     font-size: 30px;
 }
-
 
 .status {
 
@@ -76,7 +70,6 @@ body {
 
     font-weight: bold;
 }
-
 
 .card {
 
@@ -104,7 +97,6 @@ body {
     margin-bottom: 14px;
 }
 
-
 .title {
 
     color: #94a3b8;
@@ -114,14 +106,12 @@ body {
     margin-bottom: 8px;
 }
 
-
 .issue {
 
     color: #cbd5e1;
 
     font-size: 15px;
 }
-
 
 .big-number {
 
@@ -134,7 +124,6 @@ body {
     margin: 10px 0;
 }
 
-
 .prediction-number {
 
     text-align: center;
@@ -146,7 +135,6 @@ body {
     margin: 10px 0;
 }
 
-
 .badges {
 
     display: flex;
@@ -157,7 +145,6 @@ body {
 
     gap: 8px;
 }
-
 
 .badge {
 
@@ -177,7 +164,6 @@ body {
     font-weight: bold;
 }
 
-
 .top-list {
 
     display: grid;
@@ -192,7 +178,6 @@ body {
 
     margin-top: 15px;
 }
-
 
 .top-item {
 
@@ -211,14 +196,12 @@ body {
         );
 }
 
-
 .top-number {
 
     font-size: 30px;
 
     font-weight: bold;
 }
-
 
 .score {
 
@@ -228,7 +211,6 @@ body {
 
     margin-top: 5px;
 }
-
 
 .result-grid {
 
@@ -242,7 +224,6 @@ body {
 
     gap: 10px;
 }
-
 
 .result-box {
 
@@ -261,14 +242,12 @@ body {
         );
 }
 
-
 .result-name {
 
     color: #94a3b8;
 
     font-size: 13px;
 }
-
 
 .result-status {
 
@@ -279,18 +258,15 @@ body {
     font-weight: bold;
 }
 
-
 .win {
 
     color: #22c55e;
 }
 
-
 .loss {
 
     color: #ef4444;
 }
-
 
 .rate {
 
@@ -298,7 +274,6 @@ body {
 
     font-weight: bold;
 }
-
 
 .stat-row {
 
@@ -318,12 +293,10 @@ body {
         );
 }
 
-
 .stat-row:last-child {
 
     border-bottom: none;
 }
-
 
 .footer {
 
@@ -338,6 +311,16 @@ body {
     margin-top: 18px;
 }
 
+.update-time {
+
+    text-align: center;
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    margin-top: 8px;
+}
 
 @media (
     max-width: 450px
@@ -395,7 +378,6 @@ body {
 📡 最新开奖
 </div>
 
-
 <div
     id="latestIssue"
     class="issue"
@@ -403,14 +385,12 @@ body {
 -
 </div>
 
-
 <div
     id="latestNumber"
     class="big-number"
 >
 -
 </div>
-
 
 <div
     id="latestBadges"
@@ -429,14 +409,12 @@ body {
 🔮 下一期预测
 </div>
 
-
 <div
     id="predictionIssue"
     class="issue"
 >
 -
 </div>
-
 
 <div
     id="predictionNumber"
@@ -445,16 +423,13 @@ body {
 -
 </div>
 
-
 <div
     id="predictionBadges"
     class="badges"
 >
 </div>
 
-
 <div class="top-list">
-
 
 <div class="top-item">
 
@@ -504,7 +479,6 @@ body {
 
 </div>
 
-
 </div>
 
 </div>
@@ -518,14 +492,12 @@ body {
 📋 上一期预测结果
 </div>
 
-
 <div
     id="previousIssue"
     class="issue"
 >
 暂无结算数据
 </div>
-
 
 <div
     id="previousResults"
@@ -544,16 +516,13 @@ body {
 📊 AI 胜率统计
 </div>
 
-
 <div class="stat-row">
 
 <span>
 🔢 数字
 </span>
 
-<span
-    id="numberStats"
->
+<span id="numberStats">
 -
 </span>
 
@@ -566,9 +535,7 @@ body {
 🎨 颜色
 </span>
 
-<span
-    id="colourStats"
->
+<span id="colourStats">
 -
 </span>
 
@@ -581,9 +548,7 @@ body {
 📏 大小
 </span>
 
-<span
-    id="sizeStats"
->
+<span id="sizeStats">
 -
 </span>
 
@@ -600,16 +565,13 @@ body {
 ⚙️ 系统
 </div>
 
-
 <div class="stat-row">
 
 <span>
 数据库
 </span>
 
-<span
-    id="totalDraws"
->
+<span id="totalDraws">
 -
 </span>
 
@@ -622,23 +584,20 @@ body {
 最后更新
 </span>
 
-<span
-    id="updatedAt"
->
+<span id="updatedAt">
 -
 </span>
 
 </div>
 
-
 <div class="stat-row">
 
 <span>
-网页刷新
+网页数据
 </span>
 
 <span>
-30 秒
+GitHub Pages
 </span>
 
 </div>
@@ -663,9 +622,58 @@ body {
 <script>
 
 
-const JSON_URL =
-    "prediction.json";
+/*
+=========================================================
+PYTHON 会自动更新这里的数据
+=========================================================
+*/
 
+const LOTTERY_DATA = {
+    "status": "ONLINE",
+    "updated_at": "-",
+    "total_draws": 0,
+    "latest": {
+        "issue": "-",
+        "number": 0,
+        "size": "小",
+        "colours": []
+    },
+    "prediction": {
+        "issue": "-",
+        "top1": 0,
+        "top2": 0,
+        "top3": 0,
+        "top1_score": 0,
+        "size": "小",
+        "colours": []
+    },
+    "previous_result": null,
+    "statistics": {
+        "number": {
+            "win": 0,
+            "loss": 0,
+            "total": 0,
+            "rate": 0
+        },
+        "colour": {
+            "win": 0,
+            "loss": 0,
+            "total": 0,
+            "rate": 0
+        },
+        "size": {
+            "win": 0,
+            "loss": 0,
+            "total": 0,
+            "rate": 0
+        }
+    }
+};
+
+
+/* =====================================================
+   数字 → 大小
+===================================================== */
 
 function getSize(number) {
 
@@ -684,10 +692,13 @@ function getSize(number) {
 }
 
 
+/* =====================================================
+   数字 → 颜色
+===================================================== */
+
 function getColours(number) {
 
     number = Number(number);
-
 
     if (number === 0) {
 
@@ -698,7 +709,6 @@ function getColours(number) {
 
     }
 
-
     if (number === 5) {
 
         return [
@@ -707,7 +717,6 @@ function getColours(number) {
         ];
 
     }
-
 
     if (
         number === 1 ||
@@ -722,23 +731,24 @@ function getColours(number) {
 
     }
 
-
     return [
         "🔴 红色"
     ];
 }
 
 
+/* =====================================================
+   Badge
+===================================================== */
+
 function createBadges(number) {
 
     const colours =
         getColours(number);
 
-
     colours.push(
         getSize(number)
     );
-
 
     return colours
         .map(
@@ -749,6 +759,10 @@ function createBadges(number) {
 }
 
 
+/* =====================================================
+   WIN / LOSS
+===================================================== */
+
 function resultBox(
     name,
     result
@@ -758,24 +772,25 @@ function resultBox(
 
         return `
             <div class="result-box">
+
                 <div class="result-name">
                     ${name}
                 </div>
+
                 <div class="result-status">
                     -
                 </div>
+
             </div>
         `;
-
     }
-
 
     const isWin =
         result === "WIN";
 
-
     return `
         <div class="result-box">
+
             <div class="result-name">
                 ${name}
             </div>
@@ -793,14 +808,17 @@ function resultBox(
                 }
 
             </div>
+
         </div>
     `;
 }
 
 
-function formatStats(
-    stats
-) {
+/* =====================================================
+   胜率
+===================================================== */
+
+function formatStats(stats) {
 
     return `
         ${stats.rate}%
@@ -810,36 +828,16 @@ function formatStats(
 }
 
 
-async function loadPrediction() {
+/* =====================================================
+   显示数据
+===================================================== */
+
+function loadData() {
 
     try {
 
-        const response =
-            await fetch(
-                JSON_URL +
-                "?t=" +
-                Date.now(),
-                {
-                    cache:
-                        "no-store"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "无法读取 prediction.json"
-            );
-
-        }
-
-
         const data =
-            await response.json();
-
-
-        // 状态
+            LOTTERY_DATA;
 
         document.getElementById(
             "status"
@@ -847,7 +845,7 @@ async function loadPrediction() {
             "🟢 ONLINE";
 
 
-        // 最新开奖
+        /* 最新开奖 */
 
         document.getElementById(
             "latestIssue"
@@ -870,7 +868,7 @@ async function loadPrediction() {
             );
 
 
-        // 下一期
+        /* 下一期 */
 
         document.getElementById(
             "predictionIssue"
@@ -893,7 +891,7 @@ async function loadPrediction() {
             );
 
 
-        // Top 3
+        /* Top 3 */
 
         document.getElementById(
             "top1"
@@ -920,7 +918,7 @@ async function loadPrediction() {
             "%";
 
 
-        // 上一期
+        /* 上一期 */
 
         const previous =
             data.previous_result;
@@ -965,7 +963,7 @@ async function loadPrediction() {
         }
 
 
-        // 胜率
+        /* 胜率 */
 
         document.getElementById(
             "numberStats"
@@ -991,7 +989,7 @@ async function loadPrediction() {
             );
 
 
-        // 系统
+        /* 系统 */
 
         document.getElementById(
             "totalDraws"
@@ -1005,7 +1003,6 @@ async function loadPrediction() {
         ).innerText =
             data.updated_at;
 
-
     }
 
     catch (error) {
@@ -1015,24 +1012,12 @@ async function loadPrediction() {
         document.getElementById(
             "status"
         ).innerText =
-            "🔴 DATA OFFLINE";
-
+            "🔴 DATA ERROR";
     }
-
 }
 
 
-// 第一次读取
-
-loadPrediction();
-
-
-// 每 30 秒刷新网页
-
-setInterval(
-    loadPrediction,
-    30000
-);
+loadData();
 
 
 </script>
