@@ -1,22 +1,22 @@
 {
   "status": "ONLINE",
-  "updated_at": "2026-11-14 16:47:01",
-  "total_draws": 2779,
+  "updated_at": "2026-11-14 20:58:29",
+  "total_draws": 2789,
   "latest": {
-    "issue": "20261114100052014",
-    "number": 3,
-    "size": "小",
+    "issue": "20261114100052517",
+    "number": 7,
+    "size": "大",
     "colours": [
       "green"
     ]
   },
   "prediction": {
-    "issue": "20261114100052015",
-    "top1": 1,
-    "top2": 3,
-    "top3": 8,
-    "top1_score": 13.39,
-    "size": "小",
+    "issue": "20261114100052518",
+    "top1": 9,
+    "top2": 0,
+    "top3": 3,
+    "top1_score": 14.8,
+    "size": "大",
     "colours": [
       "green"
     ]
